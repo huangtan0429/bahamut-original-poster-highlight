@@ -1,12 +1,10 @@
-function replaceUrlParameter(url, paramName, paramValue) {
-
-  const urlObj = new URL(url);
-  const params = urlObj.searchParams;
-  params.set(paramName, paramValue);
-  params.delete('to'); // handle the tag function. Remove 'to' parameter if it exists
-  params.delete('last'); // handle clinking from notification. Remove 'last' parameter if it exists
-  return urlObj.toString();
-
+function buildURL(bsn, snA) {
+  // Construct the URL with the given bsn and snA
+  const baseURL = 'https://forum.gamer.com.tw/C.php?';
+  const url = new URL(baseURL);
+  url.searchParams.set('bsn', bsn);
+  url.searchParams.set('snA', snA);
+  return url.toString();
 }
 
 let originalPosterIDCache = null;
@@ -27,6 +25,7 @@ async function getOriginalPosterID(targetURL) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlString, 'text/html');
     doc.querySelectorAll('img').forEach(img => img.remove());
+
     const originalPosterElement = doc.querySelector('.c-post__header__author');
     if (originalPosterElement) {
       if (originalPosterElement.querySelector('.floor.tippy-gpbp').getAttribute('data-floor') === '1') {
@@ -52,11 +51,21 @@ async function highlightOriginalPoster() {
 
   // get the ID of the original poster
   const currentURL = document.URL.toString();
-  const targetURL = replaceUrlParameter(currentURL, 'page', '1');
+
+  if (!currentURL.includes('C.php') && !currentURL.includes('Co.php')) {
+    // If not a C.php or Co.php page, exit
+    return;
+  }
+
+  const absoluteURL = document.querySelector('form[name="frm"]').getAttribute('action');
+  let currentURLObj = new URLSearchParams(absoluteURL.split('?')[1]);
+  const bsn = currentURLObj.get('bsn');
+  const snA = currentURLObj.get('snA');
+  const targetURL = buildURL(bsn, snA);
   const originalPosterID = await getOriginalPosterID(targetURL);
 
-  if (!currentURL.includes('C.php') || !originalPosterID) {
-    // If not a C.php page or no original poster ID found, exit
+  if (!originalPosterID) {
+    // If original poster ID is not found, exit
     return;
   }
 
