@@ -43,4 +43,4 @@ ICONs were made by https://favicon.io/
 | version | Notes | Comments |
 | ---     | ---   | -------------------------------|
 | 1.0.0   | Project Initialized and Building. | Nothing. |
-| 1.0.1   | Add Cache and the fetch limitation. | Making too many calls been blocked by bahamut.... |
+| 1.0.1   | Add Cache and the fetch limitation and condition. | Making too many calls been blocked by bahamut.... |

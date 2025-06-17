@@ -13,6 +13,10 @@ let originalPosterIDCache = null;
 let originalPosterIDCacheURL = null;
 
 async function getOriginalPosterID(targetURL) {
+  // Only fetch if URL contains "C.php"
+  if (!targetURL.includes('C.php')) {
+    return '';
+  }
   // Use cache if available and URL hasn't changed
   if (originalPosterIDCache !== null && originalPosterIDCacheURL === targetURL) {
     return originalPosterIDCache;
