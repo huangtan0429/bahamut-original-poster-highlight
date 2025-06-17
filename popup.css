@@ -1,0 +1,15 @@
+body{
+    width: 250px;
+}
+.title{
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+    padding: 10px 0;
+}
+.version{
+    font-size: 12px;
+    text-align: center;
+    color: #666;
+}
