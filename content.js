@@ -9,21 +9,34 @@ function replaceUrlParameter(url, paramName, paramValue) {
 
 }
 
+let originalPosterIDCache = null;
+let originalPosterIDCacheURL = null;
+
 async function getOriginalPosterID(targetURL) {
+  // Use cache if available and URL hasn't changed
+  if (originalPosterIDCache !== null && originalPosterIDCacheURL === targetURL) {
+    return originalPosterIDCache;
+  }
   try {
     const response = await fetch(targetURL);
     const htmlString = await response.text();
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlString, 'text/html');
+    doc.querySelectorAll('img').forEach(img => img.remove());
     const originalPosterElement = doc.querySelector('.c-post__header__author');
     if (originalPosterElement) {
       if (originalPosterElement.querySelector('.floor.tippy-gpbp').getAttribute('data-floor') === '1') {
-        return originalPosterElement.querySelector('.userid').textContent.trim();
+        originalPosterIDCache = originalPosterElement.querySelector('.userid').textContent.trim().toLowerCase();
+        originalPosterIDCacheURL = targetURL;
+        return originalPosterIDCache;
       } else {
-        // If the original poster is not on the first floor, return an empty string
+        originalPosterIDCache = '';
+        originalPosterIDCacheURL = targetURL;
         return '';
       }
     }
+    originalPosterIDCache = '';
+    originalPosterIDCacheURL = targetURL;
     return '';
   } catch (error) {
     console.error('Error fetching the page:', error);
@@ -77,12 +90,24 @@ async function highlightOriginalPoster() {
   });
 }
 
+// Debounce utility
+function debounce(fn, delay) {
+  let timer = null;
+  return function(...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
 // Initial run
 highlightOriginalPoster();
 
+// Debounced version for observer
+const debouncedHighlight = debounce(highlightOriginalPoster, 300);
+
 // Observe DOM changes for unfolding comments
 const observer = new MutationObserver(() => {
-  highlightOriginalPoster();
+  debouncedHighlight();
 });
 
 observer.observe(document.body, {
