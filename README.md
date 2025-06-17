@@ -12,6 +12,9 @@
 6. 選擇剛剛解壓縮的整個**資料夾**
 7. 完成
 
+## 注意事項
+1. 使用此擴充功能可能會對巴哈姆特伺服器發出更多次請求，請**自負後果**
+
 ## 特別感謝
 ICONs were made by https://favicon.io/
 
@@ -30,6 +33,9 @@ This is a Chrome Extension to label the original poster of a thread of Bahamut F
 5. Push the "Load unpacked" button (top-left corner, probably)
 6. Choose the **FOLDER** you have unziped
 7. Done.
+
+## Notice
+1. By using this extension may produce more requests to the server of bahamut, **please take your own risk**.
 
 ## Special Thanks
 ICONs were made by https://favicon.io/
