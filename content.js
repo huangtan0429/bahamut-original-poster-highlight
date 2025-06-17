@@ -55,6 +55,11 @@ async function highlightOriginalPoster() {
   const targetURL = replaceUrlParameter(currentURL, 'page', '1');
   const originalPosterID = await getOriginalPosterID(targetURL);
 
+  if (!currentURL.includes('C.php') || !originalPosterID) {
+    // If not a C.php page or no original poster ID found, exit
+    return;
+  }
+
   const floorElements = document.querySelectorAll('.c-section__main.c-post');
   floorElements.forEach(floorElement => {
     // Prevent duplicate labels
